@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "munch",
+    "name": "Munch",
     "slug": "munch",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,13 +9,19 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsage": "Find locations near the user"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -24,6 +30,14 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "react-native-permissions",
+        {
+          "iosPermissions": [
+            "LocationWhenInUse"
+          ]
+        }
+      ],
       [
         "expo-splash-screen",
         {
