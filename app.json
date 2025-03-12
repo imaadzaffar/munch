@@ -11,8 +11,10 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationWhenInUseUsage": "Find locations near the user"
-      }
+        "NSLocationWhenInUseUsage": "Find locations near the user",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bundleIdentifier": "com.zafaris.munch"
     },
     "android": {
       "adaptiveIcon": {
@@ -50,6 +52,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b0a3eaca-df79-4428-9ddd-0238867d38d9"
+      }
+    },
+    "owner": "zafaris"
   }
 }

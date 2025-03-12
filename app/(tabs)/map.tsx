@@ -7,7 +7,9 @@ import {
   getUserSavedRestaurants,
   getUserReviewedRestaurants,
   getRestaurantsByIds,
+  getNearbyRestaurants,
 } from "@/lib/firebase";
+import { Restaurant } from "@/lib/types";
 
 export default function MapScreen() {
   const [restaurants, setRestaurants] = useState([]);
@@ -15,12 +17,18 @@ export default function MapScreen() {
   // const [saved, setSaved] = useState([]);
 
   const fetchRestaurants = async () => {
-    console.log("hello");
     let restaurants = [];
+
     const allRestaurants = await getAllRestaurants();
-    console.log(allRestaurants);
+    // console.log(allRestaurants);
     // setRestaurants(allRestaurants);
-    restaurants = [...allRestaurants];
+    if (allRestaurants) {
+      const tmp = allRestaurants.map((r) => {
+        return { type: "all", ...r };
+      });
+      console.log(tmp);
+      restaurants = [...tmp];
+    }
     console.log(restaurants.length);
 
     const userId = "NK5hqbtMQvcTRISmZjQaVVhACBH2";
@@ -55,19 +63,22 @@ export default function MapScreen() {
     console.log(restaurants.length);
     // setVisited(visitedRestaurants);
 
+    // const nearbyRestaurants = await getNearbyRestaurants(51, -0.1, 10);
+    // console.log(nearbyRestaurants);
+
     // console.log(restaurants);
     setRestaurants(restaurants);
   };
+
+  useEffect(() => {
+    fetchRestaurants();
+  }, []);
 
   const pinColors = {
     all: "red",
     saved: "yellow",
     visited: "blue",
   };
-
-  useEffect(() => {
-    fetchRestaurants();
-  }, []);
 
   return (
     <View style={styles.container}>
