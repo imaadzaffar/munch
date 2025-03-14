@@ -20,7 +20,7 @@ const getAllUsers = async () => {
   console.log("getAllUsers() called");
   try {
     const querySnapshot = await getDocs(collection(db, "users"));
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach(doc => {
       console.log(doc.id, " => ", doc.data());
     });
   } catch (error) {
@@ -30,14 +30,10 @@ const getAllUsers = async () => {
 
 const getAllRestaurants = async () => {
   try {
-    const q = query(
-      collection(db, "restaurants"),
-      where("status", "==", "published"),
-      limit(50)
-    );
+    const q = query(collection(db, "restaurants"), where("status", "==", "published"), limit(50));
     const querySnapshot = await getDocs(q);
     const restaurants: Restaurant[] = [];
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach(doc => {
       restaurants.push({ id: doc.id, ...doc.data() } as Restaurant);
     });
     // console.log(restaurants);
@@ -56,14 +52,14 @@ const getNearbyRestaurants = async (latitude: number, longitude: number, range: 
       where("location.longitude", ">=", -0.142671),
       where("location.longitude", "<=", -0.119926),
       where("location.latitude", ">=", 51.508142),
-      where("location.latitude", "<=", 51.529318),
+      where("location.latitude", "<=", 51.529318)
       // limit(10)
     );
     const querySnapshot = await getDocs(q);
     const restaurants: Restaurant[] = [];
     // TODO: calculate distance to user location
-    querySnapshot.forEach((doc) => {
-      restaurants.push({ id: doc.id, ...doc.data() } as Restaurant);
+    querySnapshot.forEach(doc => {
+      restaurants.push({ id: doc.id, ...doc.data() });
     });
     // console.log(restaurants);
     return restaurants;
@@ -82,8 +78,8 @@ const getRestaurantsByIds = async (restaurantIds: string[]) => {
     );
     const querySnapshot = await getDocs(q);
     const restaurants: Restaurant[] = [];
-    querySnapshot.forEach((doc) => {
-      restaurants.push({ id: doc.id, ...doc.data() } as Restaurant);
+    querySnapshot.forEach(doc => {
+      restaurants.push({ id: doc.id, ...doc.data() });
     });
     return restaurants;
   } catch (error) {
@@ -95,10 +91,10 @@ const getUserSavedRestaurants = async (userId: string) => {
   try {
     console.log(`getUserSavedRestaurants: users/${userId}/saved`);
     const ids: string[] = [];
-    const querySnapshot = await getDocs(
-      collection(db, `users/${userId}/saved`)
-    );
-    querySnapshot.forEach((doc) => {ids.push(doc.id)});
+    const querySnapshot = await getDocs(collection(db, `users/${userId}/saved`));
+    querySnapshot.forEach(doc => {
+      ids.push(doc.id);
+    });
     return ids;
   } catch (error) {
     console.log(error);
@@ -109,10 +105,10 @@ const getUserReviewedRestaurants = async (userId: string) => {
   try {
     console.log(`getUserReviewedRestaurants: users/${userId}/reviews`);
     const ids: string[] = [];
-    const querySnapshot = await getDocs(
-      collection(db, `users/${userId}/reviews`)
-    );
-    querySnapshot.forEach((doc) => {ids.push(doc.data()["restaurant_id"])});
+    const querySnapshot = await getDocs(collection(db, `users/${userId}/reviews`));
+    querySnapshot.forEach(doc => {
+      ids.push(doc.data()["restaurant_id"]);
+    });
     return ids;
   } catch (error) {
     console.log(error);
@@ -125,5 +121,5 @@ export {
   getUserSavedRestaurants,
   getUserReviewedRestaurants,
   getRestaurantsByIds,
-  getNearbyRestaurants
+  getNearbyRestaurants,
 };

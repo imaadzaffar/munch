@@ -4,12 +4,8 @@ import { Restaurant } from "@/lib/types";
 import { ThemedText } from "@/components/ThemedText";
 import { Image } from "expo-image";
 
-export default function RestaurantCard({
-  restaurant,
-}: {
-  restaurant: Restaurant;
-}) {
-  console.log(restaurant);
+export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
+  // console.log(restaurant);
 
   return (
     <View style={styles.container}>
@@ -17,7 +13,7 @@ export default function RestaurantCard({
       <View>
         <ThemedText type="subtitle">{restaurant.name}</ThemedText>
         <ThemedText>{`${restaurant.google_rating} (${restaurant.google_rating_count})`}</ThemedText>
-        <ThemedText>{`Fully Halal: ${restaurant.halal_status.fully_halal}`}</ThemedText>
+        <ThemedText>{`Fully Halal: ${restaurant.halal_info.fully_halal}`}</ThemedText>
         <ThemedText>{restaurant.cuisines.join(",")}</ThemedText>
       </View>
     </View>

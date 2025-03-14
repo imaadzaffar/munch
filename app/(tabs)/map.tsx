@@ -6,9 +6,8 @@ import {
   getAllRestaurants,
   getUserSavedRestaurants,
   getUserReviewedRestaurants,
-  getRestaurantsByIds,
   getNearbyRestaurants,
-} from "@/lib/firebase";
+} from "@/lib/supabase";
 import { Restaurant } from "@/lib/types";
 
 export default function MapScreen() {
@@ -23,7 +22,7 @@ export default function MapScreen() {
     // console.log(allRestaurants);
     // setRestaurants(allRestaurants);
     if (allRestaurants) {
-      const tmp = allRestaurants.map((r) => {
+      const tmp = allRestaurants.map(r => {
         return { type: "all", ...r };
       });
       console.log(tmp);
@@ -33,34 +32,12 @@ export default function MapScreen() {
 
     const userId = "NK5hqbtMQvcTRISmZjQaVVhACBH2";
 
-    const savedIds = await getUserSavedRestaurants(userId);
-    const savedRestaurants = await getRestaurantsByIds(savedIds);
-    savedRestaurants.forEach((s) => {
-      const index = restaurants.findIndex((r) => s.id === r.id);
-      if (index === -1) restaurants.push({ type: "saved", ...s });
-      else restaurants[index].type = "saved";
-    });
-    // restaurants = restaurants.concat(
-    //   savedRestaurants.map((r) => {
-    //     return { type: "saved", ...r };
-    //   })
-    // );
-    console.log(restaurants.length);
+    // const savedIds = await getUserSavedRestaurants(userId);
+    // console.log(restaurants.length);
     // setSaved(savedRestaurants);
 
-    const reviewedIds = await getUserReviewedRestaurants(userId);
-    const visitedRestaurants = await getRestaurantsByIds(reviewedIds);
-    visitedRestaurants.forEach((v) => {
-      const index = restaurants.findIndex((r) => v.id === r.id);
-      if (index === -1) restaurants.push({ type: "visited", ...v });
-      else restaurants[index].type = "visited";
-    });
-    // restaurants = restaurants.concat(
-    //   visitedRestaurants.map((r) => {
-    //     return { type: "visited", ...r };
-    //   })
-    // );
-    console.log(restaurants.length);
+    // const reviewedIds = await getUserReviewedRestaurants(userId);
+    // console.log(restaurants.length);
     // setVisited(visitedRestaurants);
 
     // const nearbyRestaurants = await getNearbyRestaurants(51, -0.1, 10);
@@ -98,12 +75,12 @@ export default function MapScreen() {
           <Marker
             key={r.id}
             coordinate={{
-              latitude: r.coordinates.latitude,
-              longitude: r.coordinates.longitude,
+              latitude: r.location_lat,
+              longitude: r.location_long,
             }}
             title={`${r.name} (${r.google_rating})`}
             description={r.cuisines.join(",")}
-            pinColor={pinColors[r.type]}
+            // pinColor={pinColors[r.type]}
           />
         ))}
         {/* {saved.map((r, index) => (

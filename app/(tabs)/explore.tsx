@@ -1,7 +1,7 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import RestaurantCard from "@/components/ui/RestaurantCard";
-import { getAllRestaurants } from "@/lib/firebase";
+import { getAllRestaurants } from "@/lib/supabase";
 import { Restaurant } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, FlatList, SafeAreaView } from "react-native";
