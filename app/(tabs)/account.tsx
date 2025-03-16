@@ -6,6 +6,7 @@ export default function AccountScreen() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="title">Account</ThemedText>
+      <Text className="font-bold text-xl">test</Text>
     </ThemedView>
   );
 }

@@ -12,6 +12,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "lib/firebase.js", "lib/supabase.js"  ]
+    "expo-env.d.ts",
+    "lib/firebase.js",
+    "lib/supabase.js",
+    "nativewind-env.d.ts"
+  ]
 }

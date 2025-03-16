@@ -3,36 +3,24 @@ import { StyleSheet, View } from "react-native";
 import { Restaurant } from "@/lib/types";
 import { ThemedText } from "@/components/ThemedText";
 import { Image } from "expo-image";
+import { cssInterop } from "nativewind";
+
+cssInterop(Image, { className: "style" });
 
 export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   // console.log(restaurant);
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.img} source={restaurant.img} />
+    <View className="flex-1 flex-row w-full p-4 border-b-2 border-white gap-4">
+      <Image className="h-[75] w-[75] rounded-lg" source={restaurant.img} />
       <View>
-        <ThemedText type="subtitle">{restaurant.name}</ThemedText>
-        <ThemedText>{`${restaurant.google_rating} (${restaurant.google_rating_count})`}</ThemedText>
-        <ThemedText>{`Fully Halal: ${restaurant.halal_info.fully_halal}`}</ThemedText>
-        <ThemedText>{restaurant.cuisines.join(",")}</ThemedText>
+        <ThemedText type="subtitle">
+          {restaurant.name} {restaurant.halal_info.fully_halal ? "🟢" : "🔴"}
+        </ThemedText>
+        <ThemedText>{`⭐️ ${restaurant.google_rating} (${restaurant.google_rating_count})`}</ThemedText>
+        <ThemedText>{`❤️ by 0 friends`}</ThemedText>
+        <ThemedText>{restaurant.cuisines.join(" • ")}</ThemedText>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    width: "100%",
-    padding: 16,
-    borderBottomWidth: 2,
-    borderBottomColor: "white",
-    gap: 16,
-  },
-  img: {
-    height: 75,
-    width: 75,
-    borderRadius: 8,
-  },
-});
