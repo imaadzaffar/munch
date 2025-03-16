@@ -8,6 +8,7 @@ import {
   getUserReviewedRestaurants,
   getNearbyRestaurants,
   getRestaurantsByName,
+  getRestaurantsByCuisines,
 } from "@/lib/supabase";
 import { Restaurant } from "@/lib/types";
 import RestaurantMapMarker from "@/components/ui/RestaurantMapMarker";
@@ -25,6 +26,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
 import { Button, Searchbar } from "react-native-paper";
 import RestaurantDetailCard from "@/components/ui/RestaurantDetailCard";
+import { Dropdown } from "react-native-element-dropdown";
+import { CUISINE_GROUPS } from "@/lib/utils";
 
 const keyExtractor = item => item.id;
 
@@ -53,9 +56,30 @@ export default function MapScreen() {
     setRestaurants(restaurants);
   };
 
+  const fetchRestaurantsByCuisines = async cuisines => {
+    // const cuisines = CUISINE_GROUPS[selectedCuisines];
+    console.log("fetching for ", cuisines);
+    const restaurants = await getRestaurantsByCuisines(cuisines);
+    setRestaurants(restaurants);
+  };
+
   useEffect(() => {
     fetchRestaurants();
   }, []);
+
+  const onSelectCuisine = value => {
+    console.log("cuisine", value);
+    const cuisines = CUISINE_GROUPS[value];
+    console.log("cuisines", cuisines);
+    bottomSheetModalRef.current?.dismiss();
+    bottomSheetRef.current?.snapToIndex(1);
+
+    if (value === "") {
+      fetchRestaurants();
+    } else {
+      fetchRestaurantsByCuisines(cuisines);
+    }
+  };
 
   const onSubmitSearch = () => {
     console.log("submitted", searchQuery);
@@ -130,6 +154,9 @@ export default function MapScreen() {
     return <BottomSheetFlatList data={restaurants} keyExtractor={keyExtractor} renderItem={renderItem} />;
   }, [restaurants]);
 
+  const [selectedCuisines, setSelectedCuisines] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
@@ -142,6 +169,29 @@ export default function MapScreen() {
                 value={searchQuery}
                 onSubmitEditing={onSubmitSearch}
                 onClearIconPress={resetRestaurantsSearch}
+              />
+              <Dropdown
+                style={[styles.dropdown]}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                // inputSearchStyle={styles.inputSearchStyle}
+                // iconStyle={styles.iconStyle}
+                data={Object.keys(CUISINE_GROUPS).map(item => ({ label: item, value: item }))}
+                // search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder={!isFocus ? "Select item" : "..."}
+                // searchPlaceholder="Search..."
+                value={selectedCuisines}
+                onFocus={() => setIsFocus(true)}
+                onBlur={() => setIsFocus(false)}
+                onChange={item => {
+                  // console.log(item.value);
+                  setSelectedCuisines(item.value);
+                  onSelectCuisine(item.value);
+                  setIsFocus(false);
+                }}
               />
             </View>
             <MapView
@@ -220,5 +270,33 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
+  },
+  dropdown: {
+    height: 50,
+    borderColor: "gray",
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginTop: 8,
+    width: "50%",
+  },
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: "absolute",
+    backgroundColor: "white",
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
   },
 });
