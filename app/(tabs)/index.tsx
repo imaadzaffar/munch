@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View, Text, FlatList, SafeAreaView } from "react-native";
 
 import * as Location from "expo-location";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function HomeScreen() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -38,38 +39,33 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (location) {
-      fetchNearbyRestaurants();
+      console.log("hello");
+      // fetchNearbyRestaurants();
     }
   }, [location]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <ThemedText type="title">Explore</ThemedText>
+    <ThemedView className="flex-1 items-center justify-center">
+      <View className="flex-row justify-center gap-2">
+        <Ionicons name="home" size={24} color="black" />
+        <ThemedText type="title">Home</ThemedText>
       </View>
-      (errorMsg ?<ThemedText>{errorMsg}</ThemedText> :<ThemedText>{JSON.stringify(location)}</ThemedText>
-      <FlatList
-        data={restaurants}
-        renderItem={({ item }) => (
-          <View>
-            <ThemedText>{item.dist_meters}m away</ThemedText>
-            <RestaurantCard restaurant={{ halal_info: { fully_halal: true }, cuisines: [], ...item }} />
-          </View>
-        )}
-      />
-      )
-    </SafeAreaView>
+    </ThemedView>
+    // <SafeAreaView>
+    //   <View className="w-full items-center my-4">
+    //     <ThemedText type="title">Explore</ThemedText>
+    //   </View>
+    //   (errorMsg ?<ThemedText>{errorMsg}</ThemedText> :<ThemedText>{JSON.stringify(location)}</ThemedText>
+    //   <FlatList
+    //     data={restaurants}
+    //     renderItem={({ item }) => (
+    //       <View>
+    //         <ThemedText>{item.dist_meters}m away</ThemedText>
+    //         <RestaurantCard restaurant={{ halal_info: { fully_halal: true }, cuisines: [], ...item }} />
+    //       </View>
+    //     )}
+    //   />
+    //   )
+    // </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    width: "100%",
-    alignItems: "center",
-    marginVertical: 16,
-  },
-  container: {
-    flex: 1,
-    // marginBottom: 50,
-  },
-});

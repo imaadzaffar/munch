@@ -5,17 +5,11 @@ import { StyleSheet, View, Text } from "react-native";
 
 export default function AccountScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">Account</ThemedText>
-      <Ionicons name="person" size={24} color="black" />
+    <ThemedView className="flex-1 items-center justify-center">
+      <View className="flex-row justify-center gap-2">
+        <Ionicons name="person-circle" size={24} color="black" />
+        <ThemedText type="title">Account</ThemedText>
+      </View>
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
