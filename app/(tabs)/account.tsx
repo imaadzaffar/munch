@@ -1,12 +1,13 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, View, Text } from "react-native";
 
 export default function AccountScreen() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="title">Account</ThemedText>
-      <Text className="font-bold text-xl">test</Text>
+      <Ionicons name="person" size={24} color="black" />
     </ThemedView>
   );
 }

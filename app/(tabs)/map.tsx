@@ -9,6 +9,7 @@ import {
   getNearbyRestaurants,
 } from "@/lib/supabase";
 import { Restaurant } from "@/lib/types";
+import RestaurantMapMarker from "@/components/ui/RestaurantMapMarker";
 
 export default function MapScreen() {
   const [restaurants, setRestaurants] = useState([]);
@@ -81,7 +82,9 @@ export default function MapScreen() {
             title={`${r.name} (${r.google_rating})`}
             description={r.cuisines.join(",")}
             // pinColor={pinColors[r.type]}
-          />
+          >
+            <RestaurantMapMarker restaurant={r} />
+          </Marker>
         ))}
         {/* {saved.map((r, index) => (
           <Marker
