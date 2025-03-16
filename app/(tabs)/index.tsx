@@ -13,11 +13,11 @@ export default function HomeScreen() {
   const [errorMsg, setErrorMsg] = useState("");
   const [restaurants, setRestaurants] = useState([]);
 
-  const fetchRestaurants = async () => {
-    console.log(location?.coords?.latitude);
-    console.log(location?.coords?.longitude);
+  const fetchNearbyRestaurants = async () => {
+    // console.log(location?.coords?.latitude);
+    // console.log(location?.coords?.longitude);
     const nearbyRestaurants = await getNearbyRestaurants(location?.coords?.longitude, location?.coords?.latitude);
-    console.log(nearbyRestaurants);
+    console.log("Nearby restaurants", nearbyRestaurants.length);
     setRestaurants(nearbyRestaurants);
   };
 
@@ -38,7 +38,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (location) {
-      fetchRestaurants();
+      fetchNearbyRestaurants();
     }
   }, [location]);
 
@@ -52,9 +52,8 @@ export default function HomeScreen() {
         data={restaurants}
         renderItem={({ item }) => (
           <View>
-            <ThemedText>{item.name}</ThemedText>
-            <ThemedText>{item.id}</ThemedText>
             <ThemedText>{item.dist_meters}m away</ThemedText>
+            <RestaurantCard restaurant={{ halal_info: { fully_halal: true }, cuisines: [], ...item }} />
           </View>
         )}
       />
