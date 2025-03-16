@@ -24,6 +24,7 @@ import RestaurantCard from "@/components/ui/RestaurantCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
 import { Button, Searchbar } from "react-native-paper";
+import RestaurantDetailCard from "@/components/ui/RestaurantDetailCard";
 
 const keyExtractor = item => item.id;
 
@@ -78,21 +79,14 @@ export default function MapScreen() {
   // callbacks
   const handleMapMarkerPress = useCallback(
     selectedRestaurantId => {
-      console.log("handleMapMarkerPress", selectedRestaurantId);
-
       const restaurant = restaurants.find(r => r.id === selectedRestaurantId);
-      console.log("length", restaurants.length);
-      console.log("found", restaurant);
-
       if (restaurant) {
         setSelectedRestaurant(restaurant);
-        console.log("selected", selectedRestaurant);
 
         bottomSheetRef.current?.snapToIndex(0);
         bottomSheetModalRef.current?.present();
 
         markerRefs.current[selectedRestaurantId]?.showCallout();
-
         mapRef.current?.animateToRegion(
           {
             latitude: restaurant?.location_lat,
@@ -137,11 +131,6 @@ export default function MapScreen() {
   }, [restaurants]);
 
   return (
-    // <SafeAreaView>
-    //   <View className="w-full items-center my-4">
-    //     <ThemedText type="title">Explore</ThemedText>
-    //   </View>
-    // </SafeAreaView>
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
         {!loading && (
@@ -157,7 +146,6 @@ export default function MapScreen() {
             </View>
             <MapView
               ref={mapRef}
-              key={restaurants.length}
               // provider="google"
               style={styles.map}
               initialRegion={{
@@ -167,6 +155,7 @@ export default function MapScreen() {
                 longitudeDelta: 0.2,
               }}
               showsUserLocation={true}
+              showsCompass={false}
             >
               {restaurants.map((r, index) => (
                 <Marker
@@ -178,8 +167,8 @@ export default function MapScreen() {
                     longitude: r.location_long,
                   }}
                   title={r.name}
-                  // description={r.cuisines.join(",")}
-                  // pinColor={pinColors[r.type]}
+                  titleVisibility="visible"
+                  tracksViewChanges={false}
                   onPress={e => handleMapMarkerPress(e.nativeEvent.id)}
                 >
                   <RestaurantMapMarker restaurant={r} />
@@ -195,16 +184,10 @@ export default function MapScreen() {
             >
               <Text className="ml-4 text-2xl font-bold">Restaurants</Text>
               {restaurantResultsList}
-              {/* <BottomSheetFlashList
-                  data={restaurants}
-                  keyExtractor={keyExtractor}
-                  renderItem={renderItem}
-                  estimatedItemSize={100}
-                /> */}
             </BottomSheet>
             <BottomSheetModal ref={bottomSheetModalRef} index={0} snapPoints={["50%"]}>
               <BottomSheetView>
-                <RestaurantCard restaurant={selectedRestaurant} />
+                <RestaurantDetailCard restaurant={selectedRestaurant} />
               </BottomSheetView>
             </BottomSheetModal>
           </>
