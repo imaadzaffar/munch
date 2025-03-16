@@ -181,7 +181,7 @@ export default function MapScreen() {
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                placeholder={!isFocus ? "Select item" : "..."}
+                placeholder={!isFocus ? "Cuisine" : "..."}
                 // searchPlaceholder="Search..."
                 value={selectedCuisines}
                 onFocus={() => setIsFocus(true)}
@@ -229,7 +229,7 @@ export default function MapScreen() {
             <BottomSheet
               ref={bottomSheetRef}
               // index={0}
-              snapPoints={["15%", "60%", "90%"]}
+              snapPoints={["15%", "40%", "80%"]}
               enableDynamicSizing={false}
             >
               <Text className="ml-4 text-2xl font-bold">Restaurants</Text>
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     marginTop: 8,
-    width: "50%",
+    width: 140,
   },
   icon: {
     marginRight: 5,
@@ -294,9 +294,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 14,
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 14,
   },
 });
