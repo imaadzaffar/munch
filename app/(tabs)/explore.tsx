@@ -24,7 +24,7 @@ import BottomSheet, {
 import RestaurantCard from "@/components/ui/RestaurantCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
-import { Button, Searchbar } from "react-native-paper";
+import { Button, IconButton, Searchbar } from "react-native-paper";
 import RestaurantDetailCard from "@/components/ui/RestaurantDetailCard";
 import { Dropdown } from "react-native-element-dropdown";
 import { CUISINE_GROUPS } from "@/lib/utils";
@@ -51,14 +51,14 @@ export default function MapScreen() {
   };
 
   const fetchRestaurantsByName = async () => {
-    console.log("fetching for ", searchQuery);
+    console.log("fetching by name:", searchQuery);
     const restaurants = await getRestaurantsByName(searchQuery);
     setRestaurants(restaurants);
   };
 
   const fetchRestaurantsByCuisines = async cuisines => {
     // const cuisines = CUISINE_GROUPS[selectedCuisines];
-    console.log("fetching for ", cuisines);
+    console.log("fetching by cuisines:", cuisines);
     const restaurants = await getRestaurantsByCuisines(cuisines);
     setRestaurants(restaurants);
   };
@@ -68,9 +68,7 @@ export default function MapScreen() {
   }, []);
 
   const onSelectCuisine = value => {
-    console.log("cuisine", value);
     const cuisines = CUISINE_GROUPS[value];
-    console.log("cuisines", cuisines);
     bottomSheetModalRef.current?.dismiss();
     bottomSheetRef.current?.snapToIndex(1);
 
@@ -82,7 +80,6 @@ export default function MapScreen() {
   };
 
   const onSubmitSearch = () => {
-    console.log("submitted", searchQuery);
     bottomSheetModalRef.current?.dismiss();
     bottomSheetRef.current?.snapToIndex(1);
 
@@ -94,9 +91,12 @@ export default function MapScreen() {
   };
 
   const resetRestaurantsSearch = () => {
+    console.log("resetting search");
     bottomSheetModalRef.current?.dismiss();
     bottomSheetRef.current?.snapToIndex(0);
 
+    setSearchQuery("");
+    setSelectedCuisines(null);
     fetchRestaurants();
   };
 
@@ -145,9 +145,8 @@ export default function MapScreen() {
   const restaurantResultsList = useMemo(() => {
     if (restaurants.length === 0) {
       return (
-        <View>
+        <View className="flex-1 items-center">
           <Text>No restaurants found</Text>
-          <Button>Request a new restaurant!</Button>
         </View>
       );
     }
@@ -170,29 +169,38 @@ export default function MapScreen() {
                 onSubmitEditing={onSubmitSearch}
                 onClearIconPress={resetRestaurantsSearch}
               />
-              <Dropdown
-                style={[styles.dropdown]}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                // inputSearchStyle={styles.inputSearchStyle}
-                // iconStyle={styles.iconStyle}
-                data={Object.keys(CUISINE_GROUPS).map(item => ({ label: item, value: item }))}
-                // search
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder={!isFocus ? "Cuisine" : "..."}
-                // searchPlaceholder="Search..."
-                value={selectedCuisines}
-                onFocus={() => setIsFocus(true)}
-                onBlur={() => setIsFocus(false)}
-                onChange={item => {
-                  // console.log(item.value);
-                  setSelectedCuisines(item.value);
-                  onSelectCuisine(item.value);
-                  setIsFocus(false);
-                }}
-              />
+              <View className="flex-row items-center">
+                <Dropdown
+                  style={[styles.dropdown]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  // inputSearchStyle={styles.inputSearchStyle}
+                  // iconStyle={styles.iconStyle}
+                  data={Object.keys(CUISINE_GROUPS).map(item => ({ label: item, value: item }))}
+                  // search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={!isFocus ? "Cuisine" : "..."}
+                  // searchPlaceholder="Search..."
+                  value={selectedCuisines}
+                  onFocus={() => setIsFocus(true)}
+                  onBlur={() => setIsFocus(false)}
+                  onChange={item => {
+                    // console.log(item.value);
+                    setSelectedCuisines(item.value);
+                    onSelectCuisine(item.value);
+                    setIsFocus(false);
+                  }}
+                />
+                <IconButton
+                  mode="contained"
+                  icon="close"
+                  iconColor={"blue"}
+                  size={20}
+                  onPress={resetRestaurantsSearch}
+                />
+              </View>
             </View>
             <MapView
               ref={mapRef}
@@ -232,7 +240,18 @@ export default function MapScreen() {
               snapPoints={["15%", "40%", "80%"]}
               enableDynamicSizing={false}
             >
-              <Text className="ml-4 text-2xl font-bold">Restaurants</Text>
+              <View className="flex-row justify-between mx-4 mb-4">
+                <Text className="text-2xl font-bold">Restaurants</Text>
+                <Button
+                  labelStyle={{ fontSize: 12, marginHorizontal: 16, marginVertical: 4 }}
+                  style={{ margin: 0 }}
+                  compact
+                  mode="contained-tonal"
+                  onPress={() => alert("Request to add a new restaurant. Fill in some deets.")}
+                >
+                  Request New
+                </Button>
+              </View>
               {restaurantResultsList}
             </BottomSheet>
             <BottomSheetModal ref={bottomSheetModalRef} index={0} snapPoints={["50%"]}>
