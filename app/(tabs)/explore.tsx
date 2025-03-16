@@ -7,6 +7,7 @@ import {
   getUserSavedRestaurants,
   getUserReviewedRestaurants,
   getNearbyRestaurants,
+  getRestaurantsByName,
 } from "@/lib/supabase";
 import { Restaurant } from "@/lib/types";
 import RestaurantMapMarker from "@/components/ui/RestaurantMapMarker";
@@ -20,18 +21,59 @@ import BottomSheet, {
   BottomSheetFlatList,
 } from "@gorhom/bottom-sheet";
 import RestaurantCard from "@/components/ui/RestaurantCard";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ThemedText } from "@/components/ThemedText";
+import { Searchbar } from "react-native-paper";
 
 const keyExtractor = item => item.id;
 
 export default function MapScreen() {
   const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // ref
   const mapRef = useRef<MapView>(null);
   const markerRefs = useRef({});
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // fetch
+  const fetchRestaurants = async () => {
+    const restaurants = await getAllRestaurants();
+    setLoading(false);
+    setRestaurants(restaurants);
+  };
+
+  const fetchRestaurantsByName = async () => {
+    console.log("fetching for ", searchQuery);
+    const restaurants = await getRestaurantsByName(searchQuery);
+    setRestaurants(restaurants);
+  };
+
+  useEffect(() => {
+    fetchRestaurants();
+  }, []);
+
+  const onSubmitSearch = () => {
+    console.log("submitted", searchQuery);
+    bottomSheetModalRef.current?.dismiss();
+    bottomSheetRef.current?.snapToIndex(1);
+
+    if (searchQuery === "") {
+      fetchRestaurants();
+    } else {
+      fetchRestaurantsByName();
+    }
+  };
+
+  const resetRestaurantsSearch = () => {
+    bottomSheetModalRef.current?.dismiss();
+    bottomSheetRef.current?.snapToIndex(0);
+
+    fetchRestaurants();
+  };
 
   // callbacks
   const handleMapMarkerPress = useCallback(
@@ -67,26 +109,6 @@ export default function MapScreen() {
     [restaurants]
   );
 
-  const fetchRestaurants = async () => {
-    const restaurants = await getAllRestaurants();
-    restaurants?.forEach(r => {
-      console.log(r.id, r.name);
-    });
-    console.log("All restaurants", restaurants.length);
-    setRestaurants(restaurants);
-  };
-
-  useEffect(() => {
-    fetchRestaurants();
-    // sheetRef.current?.present();
-  }, []);
-
-  const pinColors = {
-    all: "red",
-    saved: "yellow",
-    visited: "blue",
-  };
-
   const renderItem = useCallback(
     ({ item }) => {
       return (
@@ -103,10 +125,24 @@ export default function MapScreen() {
   );
 
   return (
+    // <SafeAreaView>
+    //   <View className="w-full items-center my-4">
+    //     <ThemedText type="title">Explore</ThemedText>
+    //   </View>
+    // </SafeAreaView>
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
-        {restaurants.length > 0 && (
+        {!loading && (
           <>
+            <View className="absolute top-[10] left-0 right-0 mx-2 z-10">
+              <Searchbar
+                placeholder="Search"
+                onChangeText={setSearchQuery}
+                value={searchQuery}
+                onSubmitEditing={onSubmitSearch}
+                onClearIconPress={resetRestaurantsSearch}
+              />
+            </View>
             <MapView
               ref={mapRef}
               key={restaurants.length}
