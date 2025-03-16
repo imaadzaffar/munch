@@ -23,7 +23,7 @@ import BottomSheet, {
 import RestaurantCard from "@/components/ui/RestaurantCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
-import { Searchbar } from "react-native-paper";
+import { Button, Searchbar } from "react-native-paper";
 
 const keyExtractor = item => item.id;
 
@@ -124,6 +124,18 @@ export default function MapScreen() {
     [handleMapMarkerPress]
   );
 
+  const restaurantResultsList = useMemo(() => {
+    if (restaurants.length === 0) {
+      return (
+        <View>
+          <Text>No restaurants found</Text>
+          <Button>Request a new restaurant!</Button>
+        </View>
+      );
+    }
+    return <BottomSheetFlatList data={restaurants} keyExtractor={keyExtractor} renderItem={renderItem} />;
+  }, [restaurants]);
+
   return (
     // <SafeAreaView>
     //   <View className="w-full items-center my-4">
@@ -182,7 +194,7 @@ export default function MapScreen() {
               enableDynamicSizing={false}
             >
               <Text className="ml-4 text-2xl font-bold">Restaurants</Text>
-              <BottomSheetFlatList data={restaurants} keyExtractor={keyExtractor} renderItem={renderItem} />
+              {restaurantResultsList}
               {/* <BottomSheetFlashList
                   data={restaurants}
                   keyExtractor={keyExtractor}
