@@ -7,6 +7,7 @@ import { cssInterop } from "nativewind";
 import HalalIcon from "@/components/ui/HalalIcon";
 
 cssInterop(Image, { className: "style" });
+cssInterop(ThemedText, { className: "style" });
 
 export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   console.log(restaurant.name);
@@ -15,10 +16,11 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
     <View className="flex-row w-full p-4 border-b-2 border-white gap-4">
       <Image className="h-[75] w-[75] rounded-lg" source={restaurant.img} />
       <View className="flex-1">
-        <ThemedText type="subtitle">{restaurant.name}</ThemedText>
-        <ThemedText>{`⭐️ ${restaurant.google_rating} (${restaurant.google_rating_count})`}</ThemedText>
-        <ThemedText>{`❤️ by 0 friends`}</ThemedText>
-        <ThemedText>{restaurant.cuisines.join(" • ")}</ThemedText>
+        <ThemedText className="font-bold">{restaurant.name}</ThemedText>
+        <ThemedText className="text-xs">{restaurant.cuisines.join(" • ")}</ThemedText>
+        <ThemedText className="text-sm">
+          {`⭐️ ${restaurant.google_rating} (${restaurant.google_rating_count})`} {`❤️ 0 friends`}
+        </ThemedText>
       </View>
       <HalalIcon size={24} strokeWidth={2} color={restaurant.halal_info.fully_halal ? "green" : "red"} />
     </View>
