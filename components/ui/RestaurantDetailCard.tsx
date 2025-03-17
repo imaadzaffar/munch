@@ -7,12 +7,14 @@ import { cssInterop } from "nativewind";
 import HalalIcon from "@/components/ui/HalalIcon";
 import { Button, Chip } from "react-native-paper";
 import { useRouter } from "expo-router";
+import { addBeenRestaurant, addSavedRestaurant } from "@/lib/supabase";
 
 cssInterop(Image, { className: "style" });
 cssInterop(ThemedText, { className: "style" });
 
 export default function RestaurantDetailCard({ restaurant }: { restaurant: Restaurant }) {
   const router = useRouter();
+  const USER_ID = "92214d35-7ed0-4f51-a131-afb9fa3c80f1";
 
   const timestampToDate = timestamp => {
     const milliseconds = timestamp._seconds * 1000 + timestamp._nanoseconds / 1e6;
@@ -53,10 +55,13 @@ export default function RestaurantDetailCard({ restaurant }: { restaurant: Resta
       </View>
       <ThemedText className="mt-2">{restaurant.address}</ThemedText>
       <View className="flex-row gap-2 mt-2">
-        <Button mode="contained-tonal" onPress={() => Linking.openURL(restaurant.links.google_maps)}>
+        {/* <Button mode="contained-tonal" onPress={() => Linking.openURL(restaurant.links.google_maps)}>
           Directions
+        </Button> */}
+        <Button mode="contained-tonal" onPress={() => addBeenRestaurant(USER_ID, restaurant.id)}>
+          Been
         </Button>
-        <Button mode="contained-tonal" onPress={() => alert("Save to wishlist")}>
+        <Button mode="contained-tonal" onPress={() => addSavedRestaurant(USER_ID, restaurant.id)}>
           Save
         </Button>
         <Button mode="contained-tonal" onPress={() => router.push("/review")}>

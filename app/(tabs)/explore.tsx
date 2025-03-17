@@ -9,6 +9,8 @@ import {
   getNearbyRestaurants,
   getRestaurantsByName,
   getRestaurantsByCuisines,
+  getRestaurantsWithFilters,
+  addSavedRestaurant,
 } from "@/lib/supabase";
 import { Restaurant } from "@/lib/types";
 import RestaurantMapMarker from "@/components/ui/RestaurantMapMarker";
@@ -27,7 +29,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { Button, IconButton, Searchbar } from "react-native-paper";
 import RestaurantDetailCard from "@/components/ui/RestaurantDetailCard";
 import { Dropdown } from "react-native-element-dropdown";
-import { CUISINE_GROUPS } from "@/lib/utils";
+import { CUISINE_GROUPS, HALAL_STATUSES } from "@/lib/utils";
 
 const keyExtractor = item => item.id;
 
@@ -35,7 +37,10 @@ export default function MapScreen() {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCuisines, setSelectedCuisines] = useState(null);
+  const [selectedHalalStatus, setSelectedHalalStatus] = useState(null);
 
   // ref
   const mapRef = useRef<MapView>(null);
@@ -63,21 +68,26 @@ export default function MapScreen() {
     setRestaurants(restaurants);
   };
 
+  const fetchRestaurantsWithFilters = async () => {
+    console.log(`fetching with filters - cuisines: ${CUISINE_GROUPS[selectedCuisines]}, halal: ${selectedHalalStatus}`);
+    const restaurants = await getRestaurantsWithFilters({
+      cuisines: CUISINE_GROUPS[selectedCuisines],
+      halal: selectedHalalStatus,
+    });
+    setRestaurants(restaurants);
+  };
+
   useEffect(() => {
     fetchRestaurants();
   }, []);
 
-  const onSelectCuisine = value => {
-    const cuisines = CUISINE_GROUPS[value];
-    bottomSheetModalRef.current?.dismiss();
-    bottomSheetRef.current?.snapToIndex(1);
-
-    if (value === "") {
+  useEffect(() => {
+    if (selectedCuisines === null && selectedHalalStatus === null) {
       fetchRestaurants();
     } else {
-      fetchRestaurantsByCuisines(cuisines);
+      fetchRestaurantsWithFilters();
     }
-  };
+  }, [selectedCuisines, selectedHalalStatus]);
 
   const onSubmitSearch = () => {
     bottomSheetModalRef.current?.dismiss();
@@ -97,6 +107,7 @@ export default function MapScreen() {
 
     setSearchQuery("");
     setSelectedCuisines(null);
+    setSelectedHalalStatus(null);
     fetchRestaurants();
   };
 
@@ -153,9 +164,6 @@ export default function MapScreen() {
     return <BottomSheetFlatList data={restaurants} keyExtractor={keyExtractor} renderItem={renderItem} />;
   }, [restaurants]);
 
-  const [selectedCuisines, setSelectedCuisines] = useState(null);
-  const [isFocus, setIsFocus] = useState(false);
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
@@ -181,16 +189,37 @@ export default function MapScreen() {
                   maxHeight={300}
                   labelField="label"
                   valueField="value"
-                  placeholder={!isFocus ? "Cuisine" : "..."}
+                  placeholder="Cuisine"
                   // searchPlaceholder="Search..."
                   value={selectedCuisines}
-                  onFocus={() => setIsFocus(true)}
-                  onBlur={() => setIsFocus(false)}
+                  // onFocus={() => setIsFocus(true)}
+                  // onBlur={() => setIsFocus(false)}
                   onChange={item => {
                     // console.log(item.value);
                     setSelectedCuisines(item.value);
-                    onSelectCuisine(item.value);
-                    setIsFocus(false);
+                    // setIsFocus(false);
+                  }}
+                />
+                <Dropdown
+                  style={[styles.dropdown]}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  // inputSearchStyle={styles.inputSearchStyle}
+                  // iconStyle={styles.iconStyle}
+                  data={HALAL_STATUSES.map(item => ({ label: item, value: item }))}
+                  // search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Halal Status"
+                  // searchPlaceholder="Search..."
+                  value={selectedHalalStatus}
+                  // onFocus={() => setIsFocus(true)}
+                  // onBlur={() => setIsFocus(false)}
+                  onChange={item => {
+                    // console.log(item.value);
+                    setSelectedHalalStatus(item.value);
+                    // setIsFocus(false);
                   }}
                 />
                 <IconButton
