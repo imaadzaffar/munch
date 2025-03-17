@@ -3,7 +3,7 @@ import { ThemedView } from "@/components/ThemedView";
 import RestaurantCard from "@/components/ui/RestaurantCard";
 import RestaurantDetailCard from "@/components/ui/RestaurantDetailCard";
 import RestaurantMapMarker from "@/components/ui/RestaurantMapMarker";
-import { getUserSavedRestaurants } from "@/lib/supabase";
+import { getUserData, getUserSavedRestaurants } from "@/lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, {
   BottomSheetFlatList,
@@ -11,6 +11,7 @@ import BottomSheet, {
   BottomSheetModalProvider,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { Image } from "expo-image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler";
@@ -20,6 +21,7 @@ import { Button } from "react-native-paper";
 export default function AccountScreen() {
   const USER_ID = "92214d35-7ed0-4f51-a131-afb9fa3c80f1";
 
+  const [userData, setUserData] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
@@ -37,7 +39,15 @@ export default function AccountScreen() {
     setRestaurants(restaurants);
   };
 
+  const fetchUserData = async () => {
+    const userData = await getUserData(USER_ID);
+    console.log(userData);
+    setLoading(false);
+    setUserData(userData[0]);
+  };
+
   useEffect(() => {
+    fetchUserData();
     fetchSavedRestaurants();
   }, []);
 
@@ -97,6 +107,37 @@ export default function AccountScreen() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
+        <ThemedView className="h-[150] p-4">
+          <ThemedView className="flex-row justify-between items-center gap-4">
+            <ThemedView className="flex-row items-center">
+              <Image style={{ width: 80, height: 80, borderRadius: 999 }} source={userData.profile_pic} />
+              <ThemedView className="ml-6">
+                <ThemedText className="font-bold">@{userData.username}</ThemedText>
+                <ThemedText>{userData.name}</ThemedText>
+              </ThemedView>
+            </ThemedView>
+            <ThemedView className="items-center">
+              <ThemedText className="text-2xl font-bold">0</ThemedText>
+              <ThemedText>Friends</ThemedText>
+            </ThemedView>
+            <ThemedView className="items-center">
+              <ThemedText className="text-2xl font-bold">
+                {restaurants.filter(r => r.saved_type == "been").length}
+              </ThemedText>
+              <ThemedText>Visited</ThemedText>
+            </ThemedView>
+            <ThemedView className="items-center">
+              <ThemedText className="text-2xl font-bold">
+                {restaurants.filter(r => r.saved_type == "saved").length}
+              </ThemedText>
+              <ThemedText>Saved</ThemedText>
+            </ThemedView>
+          </ThemedView>
+          <ThemedText className="mt-4">{userData.bio}</ThemedText>
+          {/* <Text>Following</Text>
+          <Text>Followers</Text>
+          <Text>Favourite Cuisines:</Text> */}
+        </ThemedView>
         {!loading && (
           <>
             <MapView
