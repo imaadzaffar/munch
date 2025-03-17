@@ -5,6 +5,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { Image } from "expo-image";
 import { cssInterop } from "nativewind";
 import HalalIcon from "@/components/ui/HalalIcon";
+import { Chip } from "react-native-paper";
 
 cssInterop(Image, { className: "style" });
 cssInterop(ThemedText, { className: "style" });
@@ -15,7 +16,19 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
       <Image className="h-[75] w-[75] rounded-lg" source={restaurant.img} />
       <View className="flex-1">
         <ThemedText className="font-bold">{restaurant.name}</ThemedText>
-        <ThemedText className="text-xs">{restaurant.cuisines.join(" • ")}</ThemedText>
+        <View className="flex-row gap-2">
+          {restaurant.cuisines.map(item => (
+            <Chip
+              mode="flat"
+              key={item}
+              compact={true}
+              style={{ borderRadius: 999 }}
+              textStyle={{ fontSize: 12, marginHorizontal: 16, marginVertical: 4 }}
+            >
+              {item}
+            </Chip>
+          ))}
+        </View>
         <ThemedText className="text-sm">
           {`⭐️ ${restaurant.google_rating} (${restaurant.google_rating_count})`} {`❤️ 0 friends`}
         </ThemedText>

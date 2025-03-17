@@ -246,7 +246,7 @@ export default function MapScreen() {
                   labelStyle={{ fontSize: 12, marginHorizontal: 16, marginVertical: 4 }}
                   style={{ margin: 0 }}
                   compact
-                  mode="contained-tonal"
+                  mode="contained"
                   onPress={() => alert("Request to add a new restaurant. Fill in some deets.")}
                 >
                   Request New
