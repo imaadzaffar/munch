@@ -3,6 +3,7 @@ import { ThemedView } from "@/components/ThemedView";
 import RestaurantCard from "@/components/ui/RestaurantCard";
 import RestaurantDetailCard from "@/components/ui/RestaurantDetailCard";
 import RestaurantMapMarker from "@/components/ui/RestaurantMapMarker";
+import { useThemeColor } from "@/hooks/useThemeColor";
 import { getUserData, getUserSavedRestaurants } from "@/lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, {
@@ -20,6 +21,8 @@ import { Button } from "react-native-paper";
 
 export default function AccountScreen() {
   const USER_ID = "92214d35-7ed0-4f51-a131-afb9fa3c80f1";
+  const color = useThemeColor({}, "background");
+  console.log(color);
 
   const [userData, setUserData] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
@@ -177,9 +180,11 @@ export default function AccountScreen() {
               // index={0}
               snapPoints={["15%", "40%", "80%"]}
               enableDynamicSizing={false}
+              backgroundStyle={{ backgroundColor: color }}
+              handleIndicatorStyle={{ backgroundColor: "white" }}
             >
               <View className="flex-row justify-between mx-4 mb-4">
-                <Text className="text-2xl font-bold">My Restaurants</Text>
+                <ThemedText className="text-2xl font-bold">My Restaurants</ThemedText>
                 <Button
                   labelStyle={{ fontSize: 12, marginHorizontal: 16, marginVertical: 4 }}
                   style={{ margin: 0 }}
