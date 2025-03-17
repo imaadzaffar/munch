@@ -110,7 +110,7 @@ export default function AccountScreen() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <BottomSheetModalProvider>
-        <ThemedView className="h-[150] p-4">
+        <ThemedView className="h-[150] p-4 rounded-b-3xl z-10">
           <ThemedView className="flex-row justify-between items-center gap-4">
             <ThemedView className="flex-row items-center">
               <Image style={{ width: 80, height: 80, borderRadius: 999 }} source={userData.profile_pic} />
@@ -124,13 +124,13 @@ export default function AccountScreen() {
               <ThemedText>Friends</ThemedText>
             </ThemedView>
             <ThemedView className="items-center">
-              <ThemedText className="text-2xl font-bold">
+              <ThemedText className="text-2xl font-bold text-green-500">
                 {restaurants.filter(r => r.saved_type == "been").length}
               </ThemedText>
               <ThemedText>Visited</ThemedText>
             </ThemedView>
             <ThemedView className="items-center">
-              <ThemedText className="text-2xl font-bold">
+              <ThemedText className="text-2xl font-bold text-yellow-500">
                 {restaurants.filter(r => r.saved_type == "saved").length}
               </ThemedText>
               <ThemedText>Saved</ThemedText>
@@ -222,5 +222,6 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: "100%",
+    marginTop: -20,
   },
 });
