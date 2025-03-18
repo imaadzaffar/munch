@@ -32,7 +32,9 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
         <ThemedText className="text-sm font-medium">
           {`⭐️ ${restaurant.google_rating} (${restaurant.google_rating_count})`} {`❤️ 0 friends`}
         </ThemedText>
-        {restaurant.avg_price && <ThemedText className="text-sm">£{restaurant.avg_price.toFixed(2)}</ThemedText>}
+        <ThemedText className="text-sm">
+          {restaurant.avg_price ? `£${restaurant.avg_price.toFixed(2)}` : `£_`}
+        </ThemedText>
       </View>
       <HalalIcon size={24} strokeWidth={2} color={restaurant.halal_info.fully_halal ? "green" : "orange"} />
     </View>

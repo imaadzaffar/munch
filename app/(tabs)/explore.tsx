@@ -270,7 +270,7 @@ export default function MapScreen() {
               enableDynamicSizing={false}
             >
               <View className="flex-row justify-between mx-4 mb-4">
-                <Text className="text-2xl font-bold">Restaurants</Text>
+                <Text className="text-2xl font-bold">Results</Text>
                 <Button
                   labelStyle={{ fontSize: 12, marginHorizontal: 16, marginVertical: 4 }}
                   style={{ margin: 0 }}

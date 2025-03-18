@@ -42,8 +42,10 @@ export default function RestaurantDetailCard({ restaurant }: { restaurant: Resta
         <ThemedText className="mt-2 font-bold">
           {`⭐️ ${restaurant.google_rating} (${restaurant.google_rating_count})`} {`❤️ 0 friends`}
         </ThemedText>
-        {restaurant.avg_price && <ThemedText className="mt-2 font-bold">£{restaurant.avg_price.toFixed(2)}</ThemedText>}
-        {restaurant.description && <ThemedText className="italic mb-2">{restaurant.description}</ThemedText>}
+        <ThemedText className="mt-2 font-bold">
+          {restaurant.avg_price ? `£${restaurant.avg_price.toFixed(2)}` : `£_`}
+        </ThemedText>
+        <ThemedText className="italic mb-2">{restaurant.description ? restaurant.description : `_`}</ThemedText>
         <Image className="h-[150] w-[150] rounded-lg mt-2" source={restaurant.img} />
         <View>
           <HalalIcon size={36} strokeWidth={2} color={restaurant.halal_info.fully_halal ? "green" : "orange"} />
