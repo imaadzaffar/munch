@@ -5,9 +5,9 @@ import { ThemedText } from "@/components/ThemedText";
 import { Image } from "expo-image";
 import { cssInterop } from "nativewind";
 import HalalIcon from "@/components/ui/HalalIcon";
-import { Button, Chip, Divider, Menu, PaperProvider } from "react-native-paper";
+import { Button, Chip, Divider, Menu } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { addBeenRestaurant, addSavedRestaurant } from "@/lib/supabase";
+import { addBeenRestaurant, addSavedRestaurant, removeSavedRestaurant, updateSavedRestaurant } from "@/lib/supabase";
 import { FontAwesome } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -58,6 +58,9 @@ export default function RestaurantDetailCard({
         >
           <Menu.Item
             onPress={() => {
+              type === "none"
+                ? addSavedRestaurant(USER_ID, restaurant.id)
+                : updateSavedRestaurant(USER_ID, restaurant.id, "saved");
               setType("saved");
               closeMenu();
             }}
@@ -65,6 +68,9 @@ export default function RestaurantDetailCard({
           />
           <Menu.Item
             onPress={() => {
+              type === "none"
+                ? addBeenRestaurant(USER_ID, restaurant.id)
+                : updateSavedRestaurant(USER_ID, restaurant.id, "been");
               setType("been");
               closeMenu();
             }}
@@ -73,10 +79,11 @@ export default function RestaurantDetailCard({
           <Divider />
           <Menu.Item
             onPress={() => {
+              removeSavedRestaurant(USER_ID, restaurant.id);
               setType("none");
               closeMenu();
             }}
-            title="Clear"
+            title="Remove"
           />
         </Menu>
       </View>

@@ -199,7 +199,7 @@ export default function AccountScreen() {
             </BottomSheet>
             <BottomSheetModal ref={bottomSheetModalRef} index={0} snapPoints={["50%"]}>
               <BottomSheetView>
-                <RestaurantDetailCard restaurant={selectedRestaurant} />
+                <RestaurantDetailCard restaurant={selectedRestaurant} savedType={selectedRestaurant?.saved_type} />
               </BottomSheetView>
             </BottomSheetModal>
           </>
