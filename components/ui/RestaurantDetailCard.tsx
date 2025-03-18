@@ -5,16 +5,30 @@ import { ThemedText } from "@/components/ThemedText";
 import { Image } from "expo-image";
 import { cssInterop } from "nativewind";
 import HalalIcon from "@/components/ui/HalalIcon";
-import { Button, Chip } from "react-native-paper";
+import { Button, Chip, Divider, Menu, PaperProvider } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { addBeenRestaurant, addSavedRestaurant } from "@/lib/supabase";
+import { FontAwesome } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 cssInterop(Image, { className: "style" });
 cssInterop(ThemedText, { className: "style" });
 
-export default function RestaurantDetailCard({ restaurant }: { restaurant: Restaurant }) {
+export default function RestaurantDetailCard({
+  restaurant,
+  savedType = "none",
+}: {
+  restaurant: Restaurant;
+  savedType?: string;
+}) {
   const router = useRouter();
   const USER_ID = "92214d35-7ed0-4f51-a131-afb9fa3c80f1";
+
+  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [type, setType] = useState(savedType);
+
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
 
   const timestampToDate = timestamp => {
     const milliseconds = timestamp._seconds * 1000 + timestamp._nanoseconds / 1e6;
@@ -22,9 +36,50 @@ export default function RestaurantDetailCard({ restaurant }: { restaurant: Resta
     return date.toDateString();
   };
 
+  const saveIcons = {
+    none: { icon: "plus-circle", color: "gray" },
+    been: { icon: "check", color: "green" },
+    saved: { icon: "bookmark", color: "orange" },
+  };
+
   return (
     <View className="w-full p-4 border-b-2 border-white">
-      <ThemedText className="text-3xl font-bold mb-2">{restaurant.name}</ThemedText>
+      <View className="flex-row justify-between">
+        <ThemedText className="text-3xl font-bold mb-2">{restaurant.name}</ThemedText>
+        <Menu
+          visible={menuVisible}
+          onDismiss={closeMenu}
+          anchor={
+            // <Button onPress={openMenu}>Hello</Button>
+            <TouchableOpacity onPress={openMenu}>
+              <FontAwesome name={saveIcons[type].icon} size={24} color={saveIcons[type].color} />
+            </TouchableOpacity>
+          }
+        >
+          <Menu.Item
+            onPress={() => {
+              setType("saved");
+              closeMenu();
+            }}
+            title="Save"
+          />
+          <Menu.Item
+            onPress={() => {
+              setType("been");
+              closeMenu();
+            }}
+            title="Been"
+          />
+          <Divider />
+          <Menu.Item
+            onPress={() => {
+              setType("none");
+              closeMenu();
+            }}
+            title="Clear"
+          />
+        </Menu>
+      </View>
       <View>
         <View className="flex-row gap-2">
           {restaurant.cuisines.map(item => (
